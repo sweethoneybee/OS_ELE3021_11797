@@ -1,0 +1,4 @@
+make clean
+make -j4
+make fs.img -j4
+
