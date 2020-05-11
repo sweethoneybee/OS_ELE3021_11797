@@ -89,9 +89,9 @@ found:
   p->state = EMBRYO;
   p->pid = nextpid++;
 
-  // OS Practice1
-  p->priority = p->pid;
-  // end Practice1
+  // OS Practice2
+  p->priority = 0;
+  // end Practice2
 
   release(&ptable.lock);
 
@@ -481,6 +481,33 @@ sleep(void *chan, struct spinlock *lk)
   }
 }
 
+// OS Practice2
+int
+setpriority(int pid, int priority)
+{
+    if(priority < 0 || priority > 10)
+        return -2;
+    
+    struct proc *p;
+    struct proc *me = myproc();
+    int success = -1;
+    int me_pid = me->pid;
+
+    acquire(&ptable.lock);
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+        if(p->pid == pid){
+            if(p->parent->pid == me_pid){
+                p->priority = priority;
+                success = 0;
+            }
+            break;
+        }
+    }
+    release(&ptable.lock);
+    
+    return success;
+}
+// end Practice2
 //PAGEBREAK!
 // Wake up all processes sleeping on chan.
 // The ptable lock must be held.

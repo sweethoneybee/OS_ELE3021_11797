@@ -88,6 +88,22 @@ sys_sleep(void)
   return 0;
 }
 
+// OS Practice2
+int
+sys_setpriority(void)
+{
+    int pid;
+    int priority;
+
+    if(argint(0, &pid) < 0)
+        return -1;
+    if(argint(0, &priority) < 0)
+        return -1;
+
+    return setpriority(pid, priority);
+}
+// end Practice2
+
 // return how many clock tick interrupts have occurred
 // since start.
 int

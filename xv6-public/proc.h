@@ -51,9 +51,12 @@ struct proc {
   char name[16];               // Process name (debugging)
 
 
-  // OS Practice1
-  int priority;  
-  // end Practice1
+  // OS Practice2
+  int priority;     // normal priority
+  int q_priority;   // queue priority
+  int c_pid[64];
+  int c_idx;
+  // end Practice2
 };
 
 // Process memory is laid out contiguously, low addresses first:

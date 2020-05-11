@@ -24,3 +24,4 @@
 #define SYS_getppid 23
 #define SYS_yield 24
 #define SYS_getpname 25
+#define SYS_setpriority 26

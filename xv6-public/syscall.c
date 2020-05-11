@@ -107,6 +107,7 @@ extern int sys_myfunction(void);
 extern int sys_getppid(void);
 extern int sys_yield(void);
 extern int sys_getpname(void);
+extern int sys_setpriority(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -134,6 +135,7 @@ static int (*syscalls[])(void) = {
 [SYS_getppid] sys_getppid,
 [SYS_yield] sys_yield,
 [SYS_getpname] sys_getpname,
+[SYS_setpriority] sys_setpriority,
 };
 
 void
