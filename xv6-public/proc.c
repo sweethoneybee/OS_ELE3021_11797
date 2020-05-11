@@ -89,6 +89,10 @@ found:
   p->state = EMBRYO;
   p->pid = nextpid++;
 
+  // OS Practice1
+  p->priority = p->pid;
+  // end Practice1
+
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -325,17 +329,43 @@ scheduler(void)
   struct proc *p;
   struct cpu *c = mycpu();
   c->proc = 0;
-  
+ 
+  // OS Practice1
+  struct proc *p1; // for FCFS
+  // end Practice1
+
   for(;;){
     // Enable interrupts on this processor.
     sti();
 
+    // OS Practice1
+    struct proc *high_p;
+    // end Practice1
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;
-
+      
+      // OS Practice1
+      high_p = p;
+      if(p->pid % 2 == 1){
+          for(p1 = ptable.proc; p1 < &ptable.proc[NPROC]; p1++){
+              if(p1->state != RUNNABLE)
+                  continue;
+              if(p1->pid % 2 == 0){
+                  high_p = p1;
+                  break;
+              }
+              else if(p1->pid % 2 == 1 && p1->pid < high_p->pid){
+                      high_p = p1;
+              }
+          }
+      }
+      p = high_p;
+      // end Practice1
+      
+      
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
