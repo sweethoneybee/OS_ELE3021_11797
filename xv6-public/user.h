@@ -28,6 +28,7 @@ int getppid(void);
 int  yield(void);
 void getpname(void);
 int setpriority(int, int);
+int getlev(void);
 
 // ulib.c
 int stat(const char*, struct stat*);

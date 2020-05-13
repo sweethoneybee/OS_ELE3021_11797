@@ -52,12 +52,27 @@ struct proc {
 
 
   // OS Practice2
-  int priority;     // normal priority
-  int q_priority;   // queue priority
-  int c_pid[64];
-  int c_idx;
+  int priority;     // normal priority. default 0
+  int level;        // queue level. defalut 0
+  int passed;       // If non-zero, called sys_yield
+  int used_time;    // used time quantum
   // end Practice2
 };
+
+// OS Practice2 - FQ
+struct FQ {
+    int tq;                     // Time quantum
+    int can_run;                // Number of process RUNNABLE
+    int proc_index;             // Process index in the queue
+    int q_num;                  // Queue number
+    struct proc* last_used;     // Last used process
+    struct proc* procs[NPROC];  // Process address in the queue
+};
+
+
+extern struct FQ MLFQ[MLFQ_K];       // TODO preprocessor
+// end Practice2
+
 
 // Process memory is laid out contiguously, low addresses first:
 //   text

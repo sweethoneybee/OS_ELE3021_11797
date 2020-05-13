@@ -120,7 +120,13 @@ void            userinit(void);
 int             wait(void);
 void            wakeup(void*);
 void            yield(void);
+
+int             MLFQ_push(int, struct proc*);
+int             MLFQ_pop(struct proc*);
+int             MLFQ_move(int level, struct proc*);
+int             getlev(void);
 int             setpriority(int, int);
+
 // swtch.S
 void            swtch(struct context**, struct context*);
 

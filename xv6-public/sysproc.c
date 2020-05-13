@@ -88,7 +88,26 @@ sys_sleep(void)
   return 0;
 }
 
+
+// yield wrapper function
+int
+sys_yield(void)
+{
+    struct proc* p;
+    p = myproc();
+    p->passed = 1;
+    yield();
+    return 0;
+}
+
+
 // OS Practice2
+int
+sys_getlev(void)
+{
+    return getlev();
+}
+
 int
 sys_setpriority(void)
 {

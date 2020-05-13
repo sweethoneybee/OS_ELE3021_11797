@@ -72,6 +72,9 @@ QEMU = $(shell if which qemu > /dev/null; \
 	echo "***" 1>&2; exit 1)
 endif
 
+SCHED_POLICY = DEFAULT
+MLFQ_K = 2
+
 CC = $(TOOLPREFIX)gcc
 AS = $(TOOLPREFIX)gas
 LD = $(TOOLPREFIX)ld
@@ -126,6 +129,7 @@ kernel: $(OBJS) entry.o entryother initcode kernel.ld
 	$(OBJDUMP) -S kernel > kernel.asm
 	$(OBJDUMP) -t kernel | sed '1,/SYMBOL TABLE/d; s/ .* / /; /^$$/d' > kernel.sym
 
+CFLAGS += -D $(SCHED_POLICY) -D MLFQ_K=$(MLFQ_K)
 # kernelmemfs is a copy of kernel that maintains the
 # disk image in memory instead of writing to a disk.
 # This is not so useful for testing persistent storage or
@@ -188,6 +192,7 @@ UPROGS=\
     _test_yield\
     _test_cprintf\
     _ml_test\
+    _mlfq_test\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
@@ -258,7 +263,7 @@ EXTRA=\
 	mkfs.c ulib.c user.h cat.c echo.c forktest.c grep.c kill.c\
 	ln.c ls.c mkdir.c rm.c stressfs.c usertests.c wc.c zombie.c\
 	printf.c umalloc.c my_userapp.c test.c user_inter.c test_yield.c\
-	test_cprintf.c ml_test.c\
+	test_cprintf.c ml_test.c mlfq_test.c\
     README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
 	printf.c umalloc.c my_userapp.c test.c user_inter.c\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
