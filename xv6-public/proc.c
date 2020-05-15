@@ -22,11 +22,6 @@ struct spinlock MLFQ_lock;
 int 
 MLFQ_push(int level, struct proc* p)
 {
-    //DEBUG
-//    if(p->used_time > 0)
-//    {
-//        cprintf("pushed! p name : %s p->used_time: %d p->level : %d \n", p->name, p->used_time, p->level);
-//    }
     if(level < 0 || level > MLFQ_K){
         cprintf("out of queue level in push!\n");
         return -1;
@@ -34,7 +29,9 @@ MLFQ_push(int level, struct proc* p)
     int i;
     for(i = 0; i < NPROC; i++){
         if(MLFQ[level].procs[i] == 0){
-            MLFQ[level].procs[i] = p;
+            MLFQ[level].procs[i] = p;            
+            MLFQ[p->level].last_used = 0 ;
+
             p->used_time = 0;
             p->passed = 0;
             p->level = level;
@@ -91,7 +88,6 @@ int priority_boosting(){
         if(p->level ==0){
             p->used_time = 0;
         }
-        // is it possible?
         else{
             MLFQ_move(0, p);
         }
@@ -520,37 +516,58 @@ scheduler(void)
       if(p->used_time >= MLFQ[p->level].tq)
           continue;
 
+      //TODO unleash
+      // option1
+      /*
       // Find runnable process in the lowest queue && has highest prioirty
       high_p = p;
       for(p1 = ptable.proc; p1 < &ptable.proc[NPROC]; p1++){
           if(p1->state != RUNNABLE)
               continue;
 
-          if(p1->level == high_p->level && p1->priority > high_p->priority
-                  && p1->used_time < MLFQ[p1->level].tq){
+          // Don't need to check tq.
+          // Because proc in low level queue has always left time.
+          if(p1->level < high_p->level){
               high_p = p1;
               continue;
           }
+          if(p1->level == high_p->level && p1->priority > high_p->priority
+                  && p1->used_time < MLFQ[p1->level].tq){
+              high_p = p1;
+          }
          
-          // Don't need to check tq.
-          // Because proc in low level queue has always left time.
+      }
+      p = high_p;
+      */
+
+      // option2
+      // Find lowest level queue that has runnable proc
+      high_p = p;
+      for(p1 = ptable.proc; p1 < &ptable.proc[NPROC]; p1++){
+          if(p1->state != RUNNABLE)
+              continue;
           if(p1->level < high_p->level)
               high_p = p1;
       }
+    
+      // Find runnalbe proc that has priority in lowest level queue 
+      for(i = 0; i < NPROC; i++){
+        if(MLFQ[high_p->level].procs[i] == 0 || MLFQ[high_p->level].procs[i]->state != RUNNABLE)
+            continue;
+        if(MLFQ[high_p->level].procs[i]->priority > high_p->priority)
+            high_p = MLFQ[high_p->level].procs[i];
+      }
       p = high_p;
+      
+   
 
       // Check last_used process is available
-      //if(MLFQ[p->level].last_used != 0)
       if(MLFQ[p->level].last_used != 0 
               && MLFQ[p->level].last_used->state == RUNNABLE
-              && MLFQ[p->level].last_used->level == p->level
               && MLFQ[p->level].last_used->used_time < MLFQ[p->level].tq){
-          //cprintf("before change p name : %s p id : %d  p used_time : %d\n", p->name, p->pid, p->used_time);
           p = MLFQ[p->level].last_used;
-          //cprintf("after change p name : %s p id : %d  p used_time : %d\n", p->name, p->pid, p->used_time);
       }
-
-      // now we are ready to run p
+      // now we have decided what proc to run
 
 
       // Switch to chosen process.  It is the process's job
@@ -571,38 +588,34 @@ scheduler(void)
       acquire(&MLFQ_lock);
       MLFQ_ticks++;
       release(&MLFQ_lock);
+      
+      // plus proc's used_time
       p->used_time++;
-
-      // for Debug
-      //cprintf("MLFQ_ticks: %d\n", MLFQ_ticks);
       
       // set last_used 
       MLFQ[p->level].last_used = p;
       
-      // Check proc called yield or sleep
+      // Check proc has called yield or sleep
       // if true, push proc in L0 queue
       if(p->state == SLEEPING || p->passed == 1){
           MLFQ_move(0, p);
       }
 
-      // DEBUG
-      //if(p->used_time > 0)
-      //  cprintf("p name : %s , p->used_time : %d\n", p->name, p->used_time);
-      
+ 
+      // if proc used all time quantum, then level it down
       if(p->used_time >= MLFQ[p->level].tq && p->level < MLFQ_K - 1){
-          //cprintf("move to %d\n", p->level+1);
           MLFQ_move(p->level + 1, p);
       }
-      
+     
+      // priority boosting
       if(MLFQ_ticks >= 100){
-          //Priority boosting
           priority_boosting();
           acquire(&MLFQ_lock);
           MLFQ_ticks = 0;
           release(&MLFQ_lock);
       }
       
-      // loop again
+      // loop again to find runnable proc left
       p = ptable.proc;
     }
     // Has no proc to scheduling
@@ -912,18 +925,18 @@ getlev(void)
 int
 setpriority(int pid, int priority)
 {
-//    if(priority < 0 || priority > 10)
-//        return -2;
-    
-    struct proc *p;
-    struct proc *me = myproc();
+    if(priority < 0 || priority > 10)
+        return -2;
+  
     int success = -1;
-    int me_pid = me->pid;
+    struct proc *p;
+    struct proc *me;
 
     acquire(&ptable.lock);
+    me = myproc();
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
         if(p->pid == pid){
-            if(p->parent->pid == me_pid){
+            if(p->parent->pid == me->pid){
                 p->priority = priority;
                 success = 0;
             }
@@ -931,7 +944,7 @@ setpriority(int pid, int priority)
         }
     }
     release(&ptable.lock);
-    
+
     return success;
 }
 // end Practice2
