@@ -539,6 +539,7 @@ scheduler(void)
       // Check last_used process is available
       if(MLFQ[p->level].last_used != 0 
               && MLFQ[p->level].last_used->state == RUNNABLE
+     //         && MLFQ[p->level].last_used->level == p->level
               && MLFQ[p->level].last_used->used_time < MLFQ[p->level].tq){
           p = MLFQ[p->level].last_used;
       }
