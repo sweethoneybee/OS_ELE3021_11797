@@ -29,6 +29,8 @@ int  yield(void);
 void getpname(void);
 int setpriority(int, int);
 int getlev(void);
+int getadmin(char*);
+int exec2(char*, char**, int);
 
 // ulib.c
 int stat(const char*, struct stat*);

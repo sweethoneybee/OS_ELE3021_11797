@@ -25,6 +25,11 @@ void            panic(char*) __attribute__((noreturn));
 // exec.c
 int             exec(char*, char**);
 
+// project02
+// exec2.c
+int             exec2(char*, char**, int);
+// end projec02
+
 // file.c
 struct file*    filealloc(void);
 void            fileclose(struct file*);
@@ -126,6 +131,8 @@ int             MLFQ_pop(struct proc*);
 int             MLFQ_move(int level, struct proc*);
 int             getlev(void);
 int             setpriority(int, int);
+
+int             getadmin(char*);
 
 // swtch.S
 void            swtch(struct context**, struct context*);

@@ -7,6 +7,8 @@
 #include "proc.h"
 #include "spinlock.h"
 
+//extern char corpass[] = {"2016047883"};
+
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -178,6 +180,9 @@ found:
   p->used_time = 0;
   // end Practice2
 
+  // project02
+  p->mode = 0;
+  // end project02
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -773,6 +778,49 @@ setpriority(int pid, int priority)
     return success;
 }
 // end Practice2
+
+// project02
+int
+getadmin(char *password)
+{
+    char corpass[11] = {"2016047883"};
+    char *a, *b;
+    struct proc *p;
+    a = corpass;
+    b = password;
+    
+    while(*a && *a == *b)
+        a++, b++;
+    if(((uchar)*a - (uchar)*b) == 0){
+        acquire(&ptable.lock);
+        p = myproc();
+        p->mode = 1;
+        release(&ptable.lock);
+        return 0;
+    }
+    return -1;
+    /*
+    while(*cmp) {
+        if(*cmp != *password)
+            return -1;
+
+        cmp++;
+        password++;
+    }
+
+    if(password == '\0') {
+        acquire(&ptable.lock);
+        p = myproc();
+        p->mode = 1; 
+        release(&ptable.lock);
+        return 0;
+    }
+    return -1;
+    */
+}
+// end project02
+
+
 //PAGEBREAK!
 // Wake up all processes sleeping on chan.
 // The ptable lock must be held.

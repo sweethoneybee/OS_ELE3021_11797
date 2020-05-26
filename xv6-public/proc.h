@@ -57,6 +57,10 @@ struct proc {
   int passed;       // If non-zero, called sys_yield
   int used_time;    // used time quantum
   // end Practice2
+
+  // project02
+  int mode;         // User mode: 0. Adminstrator mode: 1.
+  // end project02
 };
 
 // OS Practice2 - FQ

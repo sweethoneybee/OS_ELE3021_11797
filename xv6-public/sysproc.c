@@ -123,6 +123,16 @@ sys_setpriority(void)
 }
 // end Practice2
 
+// project02
+int
+sys_getadmin(void)
+{
+    char *password;
+    if(argstr(0, &password) < 0)
+        return -1;
+    return getadmin(password);
+}
+// end project02
 // return how many clock tick interrupts have occurred
 // since start.
 int
