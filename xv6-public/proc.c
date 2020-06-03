@@ -182,7 +182,9 @@ found:
 
   // project02
   p->mode = 0;
+  p->memlimit = 0;
   // end project02
+
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -261,7 +263,17 @@ growproc(int n)
   uint sz;
   struct proc *curproc = myproc();
 
+  // sz = curproc->sz;
+
+  // project02
+  acquire(&ptable.lock);  
   sz = curproc->sz;
+  if(curproc->memlimit != 0 && sz + n > curproc->memlimit){
+    release(&ptable.lock);
+    return -1;
+  }
+  release(&ptable.lock);
+  // end project02
   if(n > 0){
     if((sz = allocuvm(curproc->pgdir, sz, sz + n)) == 0)
       return -1;
@@ -817,6 +829,30 @@ getadmin(char *password)
     }
     return -1;
     */
+}
+int
+setmemorylimit(int pid, int limit)
+{
+    if(limit < 0)
+        return -1;
+
+    struct proc* p;
+    acquire(&ptable.lock);
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+        if(p->pid == pid){
+            if(p->mode == 0) // usermode
+                break;
+            if(limit > 0 && p->sz > limit)
+                break;
+
+            p->memlimit = limit;
+            release(&ptable.lock);
+            return 0;
+        }
+    }
+    release(&ptable.lock);
+
+    return -1;
 }
 // end project02
 

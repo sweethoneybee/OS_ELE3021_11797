@@ -133,6 +133,7 @@ int             getlev(void);
 int             setpriority(int, int);
 
 int             getadmin(char*);
+int             setmemorylimit(int, int);
 
 // swtch.S
 void            swtch(struct context**, struct context*);

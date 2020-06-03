@@ -132,7 +132,22 @@ sys_getadmin(void)
         return -1;
     return getadmin(password);
 }
+
+int
+sys_setmemorylimit(void)
+{
+    int pid;
+    int limit;
+    
+    if(argint(0, &pid) < 0)
+        return -1;
+    if(argint(1, &limit) < 0)
+        return -1;
+
+    return setmemorylimit(pid, limit);
+}
 // end project02
+
 // return how many clock tick interrupts have occurred
 // since start.
 int

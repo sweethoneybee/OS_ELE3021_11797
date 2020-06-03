@@ -111,6 +111,7 @@ extern int sys_setpriority(void);
 extern int sys_getlev(void);
 extern int sys_getadmin(void);
 extern int sys_exec2(void);
+extern int sys_setmemorylimit(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -142,6 +143,7 @@ static int (*syscalls[])(void) = {
 [SYS_getlev] sys_getlev,
 [SYS_getadmin] sys_getadmin,
 [SYS_exec2] sys_exec2,
+[SYS_setmemorylimit] sys_setmemorylimit,
 };
 
 void

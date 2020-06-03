@@ -195,6 +195,9 @@ UPROGS=\
     _ml_test\
     _mlfq_test\
     _test_getadmin\
+    _p2_memory_test\
+    _p2_stack_test\
+    _p2_admin_test\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
@@ -266,6 +269,7 @@ EXTRA=\
 	ln.c ls.c mkdir.c rm.c stressfs.c usertests.c wc.c zombie.c\
 	printf.c umalloc.c my_userapp.c test.c user_inter.c test_yield.c\
 	test_cprintf.c ml_test.c mlfq_test.c test_getadmin.c\
+    p2_memory_test.c p2_stack_test.c p2_admin_test.c\
     README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
 	printf.c umalloc.c my_userapp.c test.c user_inter.c\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\

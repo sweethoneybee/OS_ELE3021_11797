@@ -60,6 +60,7 @@ struct proc {
 
   // project02
   int mode;         // User mode: 0. Adminstrator mode: 1.
+  int memlimit;     // Memory limit. Initialized with 0(=infinite).
   // end project02
 };
 
