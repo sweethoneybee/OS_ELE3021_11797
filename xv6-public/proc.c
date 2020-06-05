@@ -183,6 +183,7 @@ found:
   // project02
   p->mode = 0;
   p->memlimit = 0;
+  p->borntime = ticks;
   // end project02
 
   release(&ptable.lock);
@@ -853,6 +854,26 @@ setmemorylimit(int pid, int limit)
     release(&ptable.lock);
 
     return -1;
+}
+
+int
+printproclist(void)
+{
+    struct proc* p;
+//    cprintf("NAME \t\t | PID | TIME (ms) | MEMORY (bytes) |");
+//    cprintf(" MEMLIM(bytes)\n");
+    acquire(&ptable.lock);
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+        if(p->state != UNUSED){
+            cprintf("Name: %s\t Pid: %d\t Time(ms): %d\t Memory(bytes): %d\t Memlim(bytes): %d\n"
+                    , p->name, p->pid, (ticks - p->borntime) * 10, p->sz
+                    , p->memlimit);
+//            cprintf("ticks : %d, p->pid : %d, p->borntime : %d\n", ticks, p->pid, p->borntime);
+        }
+    }
+    release(&ptable.lock);
+    cprintf("\n");
+    return 0;
 }
 // end project02
 

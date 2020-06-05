@@ -426,7 +426,6 @@ sys_exec2(void)
   char *path, *argv[MAXARG];
   int i, stacksize;
   uint uargv, uarg;
-  
   // Check mode
   if(myproc()->mode != 1)
       return -1;
@@ -434,8 +433,7 @@ sys_exec2(void)
   if(argstr(0, &path) < 0 || argint(1, (int*)&uargv) < 0
           || argint(2, &stacksize) < 0){
     return -1;
-  }
-
+  } 
   // Check stacksize is in 1 ~ 100
   if(stacksize < 1 || stacksize > 100)
       return -1;

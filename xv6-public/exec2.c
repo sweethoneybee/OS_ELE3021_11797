@@ -65,9 +65,9 @@ exec2(char *path, char **argv, int stacksize)
   sz = PGROUNDUP(sz);
  
   // project02
-  if((sz = allocuvm(pgdir, sz, sz + stacksize*PGSIZE)) == 0)
+  if((sz = allocuvm(pgdir, sz, sz + (stacksize + 1) * PGSIZE)) == 0)
     goto bad;
-  clearpteu(pgdir, (char*)(sz - stacksize*PGSIZE));
+  clearpteu(pgdir, (char*)(sz - (stacksize + 1) * PGSIZE));
   sp = sz;
   // end project02
 

@@ -146,6 +146,12 @@ sys_setmemorylimit(void)
 
     return setmemorylimit(pid, limit);
 }
+
+int
+sys_printproclist(void)
+{
+    return printproclist();
+}
 // end project02
 
 // return how many clock tick interrupts have occurred

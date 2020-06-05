@@ -32,6 +32,7 @@ int getlev(void);
 int getadmin(char*);
 int exec2(char*, char**, int);
 int setmemorylimit(int, int);
+int printproclist(void);
 
 // ulib.c
 int stat(const char*, struct stat*);

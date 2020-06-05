@@ -134,6 +134,7 @@ int             setpriority(int, int);
 
 int             getadmin(char*);
 int             setmemorylimit(int, int);
+int             printproclist(void);
 
 // swtch.S
 void            swtch(struct context**, struct context*);
