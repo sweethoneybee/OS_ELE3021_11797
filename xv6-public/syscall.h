@@ -30,3 +30,4 @@
 #define SYS_exec2 29
 #define SYS_setmemorylimit 30
 #define SYS_printproclist 31
+#define SYS_getshmem 32

@@ -152,6 +152,17 @@ sys_printproclist(void)
 {
     return printproclist();
 }
+
+int 
+sys_getshmem(void)
+{
+    int pid;
+    
+    if(argint(0, &pid) < 0)
+        return -1;
+
+    return (int)getshmem(pid);
+}
 // end project02
 
 // return how many clock tick interrupts have occurred

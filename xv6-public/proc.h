@@ -62,6 +62,7 @@ struct proc {
   int mode;         // User mode: 0. Adminstrator mode: 1.
   int memlimit;     // Memory limit. Initialized with 0(=infinite).
   int borntime;     // Process born time. 
+  char* shmem;      // Shared memory
   // end project02
 };
 
@@ -79,6 +80,16 @@ struct FQ {
 extern struct FQ MLFQ[MLFQ_K];       // TODO preprocessor
 // end Practice2
 
+// project02
+/*
+struct sharedmemory{
+    char *address;
+    int allocated;
+    int owner;
+};
+*/
+
+// end project02
 
 // Process memory is laid out contiguously, low addresses first:
 //   text

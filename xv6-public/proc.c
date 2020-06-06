@@ -8,6 +8,14 @@
 #include "spinlock.h"
 
 //extern char corpass[] = {"2016047883"};
+// project02
+/*
+struct {
+    struct spinlock lock;
+    struct sharedmemory shmem[NPROC]; // 64 shared memory pages.
+}shmemtable;
+*/
+// end project02 
 
 struct {
   struct spinlock lock;
@@ -159,6 +167,7 @@ allocproc(void)
 {
   struct proc *p;
   char *sp;
+//  struct sharedmemory *mp;
 
   acquire(&ptable.lock);
 
@@ -184,6 +193,7 @@ found:
   p->mode = 0;
   p->memlimit = 0;
   p->borntime = ticks;
+
   // end project02
 
   release(&ptable.lock);
@@ -212,7 +222,34 @@ found:
   // OS Practice2
   MLFQ_push(0, p);
   // end Practice2
-  return p;
+
+  // project02
+  /*
+  acquire(&shmemtable.lock);
+  for(mp = shmemtable1.shmem; mp < &shmemtable1.shmem[NPROC]; mp++){
+      if(mp->allocated != 0)
+          continue;
+      mp->address = kalloc();
+      if(mp->address == 0){
+          cprintf("kalloc failed\n");
+          kfree(mp->address);
+      }
+      else{
+        memset(mp->address, 0, PGSIZE);
+        acquire(&ptable.lock);
+        p->shmem = mp->address;
+        release(&ptable.lock);
+        mp->allocated = 1;
+        mp->owner = p->pid;
+        cprintf("In allocproc, pid : %d, shmem : \"%s\"\n", p->pid, (p->shmem));
+      }
+      break;
+  }
+  release(&shmemtable.lock);
+  */
+  // end project02
+
+ return p;
 }
 
 //PAGEBREAK: 32
@@ -812,24 +849,6 @@ getadmin(char *password)
         return 0;
     }
     return -1;
-    /*
-    while(*cmp) {
-        if(*cmp != *password)
-            return -1;
-
-        cmp++;
-        password++;
-    }
-
-    if(password == '\0') {
-        acquire(&ptable.lock);
-        p = myproc();
-        p->mode = 1; 
-        release(&ptable.lock);
-        return 0;
-    }
-    return -1;
-    */
 }
 int
 setmemorylimit(int pid, int limit)
@@ -860,19 +879,39 @@ int
 printproclist(void)
 {
     struct proc* p;
-//    cprintf("NAME \t\t | PID | TIME (ms) | MEMORY (bytes) |");
-//    cprintf(" MEMLIM(bytes)\n");
     acquire(&ptable.lock);
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
         if(p->state != UNUSED){
             cprintf("Name: %s\t Pid: %d\t Time(ms): %d\t Memory(bytes): %d\t Memlim(bytes): %d\n"
                     , p->name, p->pid, (ticks - p->borntime) * 10, p->sz
                     , p->memlimit);
-//            cprintf("ticks : %d, p->pid : %d, p->borntime : %d\n", ticks, p->pid, p->borntime);
         }
     }
     release(&ptable.lock);
     cprintf("\n");
+    return 0;
+}
+char*
+getshmem(int pid)
+{
+    /*
+    struct proc* p;
+    char* shmem;
+    shmem = 0;
+
+    acquire(&ptable.lock);
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+        if(p->pid == pid){
+            cprintf("find!\n");
+            shmem = p->shmem;
+            break;
+        }
+    }
+    release(&ptable.lock);
+    cprintf("shmem: %s\n", shmem);
+    if(shmem)
+        return shmem;
+    */
     return 0;
 }
 // end project02
