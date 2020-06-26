@@ -190,8 +190,6 @@ UPROGS=\
     _my_userapp\
     _test\
     _user_inter\
-    _test_yield\
-    _test_cprintf\
     _ml_test\
     _mlfq_test\
     _test_getadmin\
@@ -201,6 +199,7 @@ UPROGS=\
     _pmanager\
     _test_getshmem\
     _p2_shmem_test\
+    _test_account\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
@@ -270,10 +269,10 @@ qemu-nox-gdb: fs.img xv6.img .gdbinit
 EXTRA=\
 	mkfs.c ulib.c user.h cat.c echo.c forktest.c grep.c kill.c\
 	ln.c ls.c mkdir.c rm.c stressfs.c usertests.c wc.c zombie.c\
-	printf.c umalloc.c my_userapp.c test.c user_inter.c test_yield.c\
-	test_cprintf.c ml_test.c mlfq_test.c test_getadmin.c\
+	printf.c umalloc.c my_userapp.c test.c user_inter.c \
+	ml_test.c mlfq_test.c test_getadmin.c\
     p2_memory_test.c p2_stack_test.c p2_admin_test.c pmanager.c\
-    test_getshmem.c p2_shmem_test.c\
+    test_getshmem.c p2_shmem_test.c test_account.c\
     README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
 	printf.c umalloc.c my_userapp.c test.c user_inter.c\
 	README dot-bochsrc *.pl toc.* runoff runoff1 runoff.list\
